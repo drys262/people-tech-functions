@@ -1,8 +1,23 @@
-import * as functions from 'firebase-functions';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+import { deleteUserData, createUserData } from "./handlers";
+
+try {
+  admin.initializeApp();
+} catch (e) {}
+
+const db = admin.firestore();
+db.settings({ timestampsInSnapshots: true });
+
+export const onCreateUser = functions.auth
+  .user()
+  .onCreate(async (user: admin.auth.UserRecord) => {
+    return createUserData(user);
+  });
+
+export const onDeleteUser = functions.auth
+  .user()
+  .onDelete((user: admin.auth.UserRecord) => {
+    return deleteUserData(user);
+  });
