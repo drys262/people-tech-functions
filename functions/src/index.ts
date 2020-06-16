@@ -1,7 +1,7 @@
-import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
 
-import { deleteUserData, createUserData } from "./handlers";
+import { deleteUserData, createUserData, filterData } from './handlers';
 
 try {
   admin.initializeApp();
@@ -21,3 +21,9 @@ export const onDeleteUser = functions.auth
   .onDelete((user: admin.auth.UserRecord) => {
     return deleteUserData(user);
   });
+
+export const httpFilterData = functions.https.onRequest(
+  (req: functions.Request, res: functions.Response) => {
+    return filterData(req, res);
+  }
+);
